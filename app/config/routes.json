@@ -1,0 +1,15 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "page": "index",
+      "routeType": "page",
+      "layout": "main"
+    },
+    {
+      "path": "/cliente/area-do-cliente",
+      "page": "cliente/area-do-cliente",
+      "layout": "cliente"
+    }
+  ]
+}

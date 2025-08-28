@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "options": {
+      "linkedFile": "/views/index.ejs",
+      "linkedForm": "criar_conta"
+    },
+    "$_POST": [
+      {
+        "type": "text",
+        "fieldName": "nome_completo",
+        "options": {
+          "rules": {}
+        },
+        "name": "nome_completo"
+      },
+      {
+        "type": "text",
+        "fieldName": "cpf",
+        "options": {
+          "rules": {}
+        },
+        "name": "cpf"
+      },
+      {
+        "type": "text",
+        "fieldName": "whatsapp",
+        "options": {
+          "rules": {}
+        },
+        "name": "whatsapp"
+      },
+      {
+        "type": "text",
+        "fieldName": "email",
+        "options": {
+          "rules": {}
+        },
+        "name": "email"
+      },
+      {
+        "type": "text",
+        "fieldName": "terms",
+        "options": {
+          "rules": {}
+        },
+        "name": "terms"
+      },
+      {
+        "type": "text",
+        "fieldName": "lgpd",
+        "options": {
+          "rules": {}
+        },
+        "name": "lgpd"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "query",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "clientes",
+                "column": "cpf"
+              },
+              {
+                "table": "clientes",
+                "column": "id_cliente"
+              }
+            ],
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{$_POST.cpf}}",
+                "test": ""
+              }
+            ],
+            "table": {
+              "name": "clientes"
+            },
+            "primary": "id_cliente",
+            "joins": [],
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "clientes.cpf",
+                  "field": "clientes.cpf",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{$_POST.cpf}}",
+                  "data": {
+                    "table": "clientes",
+                    "column": "cpf",
+                    "type": "text",
+                    "columnObj": {
+                      "type": "string",
+                      "maxLength": -5,
+                      "primary": false,
+                      "unique": false,
+                      "nullable": true,
+                      "name": "cpf"
+                    }
+                  },
+                  "operation": "="
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "select \"cpf\", \"id_cliente\" from \"clientes\" where \"clientes\".\"cpf\" = ?"
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "text",
+            "name": "cpf"
+          },
+          {
+            "type": "text",
+            "name": "id_cliente"
+          }
+        ],
+        "outputType": "object"
+      },
+      {
+        "name": "checkExisting",
+        "module": "core",
+        "action": "condition",
+        "options": {
+          "if": "{{query}}",
+          "then": {
+            "steps": {
+              "name": "resposta",
+              "module": "core",
+              "action": "setvalue",
+              "options": {
+                "key": "resposta",
+                "value": "Este cpf já está cadastrado!"
+              },
+              "meta": [],
+              "outputType": "text",
+              "output": true
+            }
+          }
+        },
+        "outputType": "boolean"
+      },
+      {
+        "name": "",
+        "module": "core",
+        "action": "condition",
+        "options": {
+          "if": "{{!query}}",
+          "then": {
+            "steps": [
+              {
+                "name": "insert",
+                "module": "dbupdater",
+                "action": "insert",
+                "options": {
+                  "connection": "db",
+                  "sql": {
+                    "type": "insert",
+                    "values": [
+                      {
+                        "table": "clientes",
+                        "column": "nome_completo",
+                        "type": "text",
+                        "value": "{{$_POST.nome_completo}}"
+                      },
+                      {
+                        "table": "clientes",
+                        "column": "cpf",
+                        "type": "text",
+                        "value": "{{$_POST.cpf}}"
+                      },
+                      {
+                        "table": "clientes",
+                        "column": "whatsapp",
+                        "type": "text",
+                        "value": "{{$_POST.whatsapp}}"
+                      },
+                      {
+                        "table": "clientes",
+                        "column": "email",
+                        "type": "text",
+                        "value": "{{$_POST.email}}"
+                      },
+                      {
+                        "table": "clientes",
+                        "column": "lgpd",
+                        "type": "text",
+                        "value": "{{$_POST.lgpd}}"
+                      },
+                      {
+                        "table": "clientes",
+                        "column": "termo_participacap",
+                        "type": "text",
+                        "value": "{{$_POST.terms}}"
+                      }
+                    ],
+                    "table": "clientes",
+                    "returning": "id_cliente",
+                    "query": "insert into \"clientes\" (\"cpf\", \"email\", \"lgpd\", \"nome_completo\", \"termo_participacap\", \"whatsapp\") values (?, ?, ?, ?, ?, ?)",
+                    "params": [
+                      {
+                        "name": ":P1",
+                        "type": "expression",
+                        "value": "{{$_POST.nome_completo}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P2",
+                        "type": "expression",
+                        "value": "{{$_POST.cpf}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P3",
+                        "type": "expression",
+                        "value": "{{$_POST.whatsapp}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P4",
+                        "type": "expression",
+                        "value": "{{$_POST.email}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P5",
+                        "type": "expression",
+                        "value": "{{$_POST.lgpd}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P6",
+                        "type": "expression",
+                        "value": "{{$_POST.terms}}",
+                        "test": ""
+                      }
+                    ]
+                  }
+                },
+                "meta": [
+                  {
+                    "name": "identity",
+                    "type": "text"
+                  },
+                  {
+                    "name": "affected",
+                    "type": "number"
+                  }
+                ]
+              },
+              {
+                "name": "resposta",
+                "module": "core",
+                "action": "setvalue",
+                "options": {
+                  "key": "resposta",
+                  "value": "Cadastro realizado com sucesso!"
+                },
+                "meta": [],
+                "outputType": "text",
+                "output": true
+              }
+            ]
+          }
+        },
+        "outputType": "boolean"
+      }
+    ]
+  }
+}

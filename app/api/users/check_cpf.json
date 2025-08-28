@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "$_GET": [
+      {
+        "type": "text",
+        "fieldName": "cpf",
+        "options": {
+          "rules": {
+            "core:required": {
+              "message": "CPF é obrigatório"
+            }
+          }
+        },
+        "name": "cpf"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "cleanCpf",
+        "module": "core",
+        "action": "setvalue",
+        "options": {
+          "value": "{{$_GET.cpf.replace('.', '').replace('.', '').replace('-', '')}}"
+        },
+        "outputType": "text",
+        "meta": []
+      },
+      {
+        "name": "checkCpf",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "users",
+                "column": "cpf"
+              }
+            ],
+            "table": {
+              "name": "users"
+            },
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "users.cpf",
+                  "field": "users.cpf",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{cleanCpf}}",
+                  "data": {
+                    "column": "cpf"
+                  },
+                  "operation": "="
+                }
+              ]
+            }
+          }
+        },
+        "output": false,
+        "meta": [],
+        "outputType": "object"
+      },
+      {
+        "name": "response",
+        "module": "core",
+        "action": "setvalue",
+        "options": {
+          "value": {
+            "exists": "{{checkCpf !== null}}"
+          }
+        },
+        "output": true,
+        "meta": [],
+        "outputType": "object"
+      }
+    ]
+  }
+}
