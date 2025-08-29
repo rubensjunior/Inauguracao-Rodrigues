@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "$_GET": [
+      {
+        "type": "text",
+        "name": "sort"
+      },
+      {
+        "type": "text",
+        "name": "dir"
+      },
+      {
+        "type": "number",
+        "name": "inauguracao"
+      },
+      {
+        "type": "text",
+        "name": "cliente"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "query",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "cadastro_participante",
+                "column": "id_inauguracao"
+              },
+              {
+                "table": "cadastro_participante",
+                "column": "id_cliente"
+              }
+            ],
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{$_GET.cliente}}",
+                "test": ""
+              },
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P2",
+                "value": "{{$_GET.inauguracao}}",
+                "test": ""
+              }
+            ],
+            "table": {
+              "name": "cadastro_participante"
+            },
+            "primary": "id_cad_cliente",
+            "joins": [],
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "cadastro_participante.id_cliente",
+                  "field": "cadastro_participante.id_cliente",
+                  "type": "double",
+                  "operator": "equal",
+                  "value": "{{$_GET.cliente}}",
+                  "data": {
+                    "table": "cadastro_participante",
+                    "column": "id_cliente",
+                    "type": "number",
+                    "columnObj": {
+                      "type": "reference",
+                      "primary": false,
+                      "unique": false,
+                      "nullable": true,
+                      "references": "id_cliente",
+                      "inTable": "clientes",
+                      "referenceType": "bigInteger",
+                      "onUpdate": "NO ACTION",
+                      "onDelete": "NO ACTION",
+                      "name": "id_cliente"
+                    }
+                  },
+                  "operation": "=",
+                  "table": "cadastro_participante"
+                },
+                {
+                  "id": "cadastro_participante.id_inauguracao",
+                  "field": "cadastro_participante.id_inauguracao",
+                  "type": "double",
+                  "operator": "equal",
+                  "value": "{{$_GET.inauguracao}}",
+                  "data": {
+                    "table": "cadastro_participante",
+                    "column": "id_inauguracao",
+                    "type": "number",
+                    "columnObj": {
+                      "type": "reference",
+                      "primary": false,
+                      "unique": false,
+                      "nullable": false,
+                      "references": "id_inauguracao",
+                      "inTable": "inauguracao",
+                      "referenceType": "bigInteger",
+                      "onUpdate": "NO ACTION",
+                      "onDelete": "NO ACTION",
+                      "name": "id_inauguracao"
+                    }
+                  },
+                  "operation": "=",
+                  "table": "cadastro_participante"
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "select \"id_inauguracao\", \"id_cliente\" from \"cadastro_participante\" where \"cadastro_participante\".\"id_cliente\" = ? and \"cadastro_participante\".\"id_inauguracao\" = ?"
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "number",
+            "name": "id_inauguracao"
+          },
+          {
+            "type": "number",
+            "name": "id_cliente"
+          }
+        ],
+        "outputType": "object"
+      },
+      {
+        "name": "",
+        "module": "core",
+        "action": "condition",
+        "options": {
+          "if": "{{$_GET.inauguracao==query.id_inauguracao}}",
+          "then": {
+            "steps": {
+              "name": "resposta",
+              "module": "core",
+              "action": "setvalue",
+              "options": {
+                "key": "resposta",
+                "value": "Você já está cadastrado nesta inauguração!"
+              },
+              "meta": [],
+              "outputType": "text",
+              "output": true,
+              "collapsed": true
+            }
+          },
+          "else": {
+            "steps": [
+              {
+                "name": "insert",
+                "module": "dbupdater",
+                "action": "insert",
+                "options": {
+                  "connection": "db",
+                  "sql": {
+                    "type": "insert",
+                    "values": [
+                      {
+                        "table": "cadastro_participante",
+                        "column": "id_inauguracao",
+                        "type": "number",
+                        "value": "{{$_GET.inauguracao}}"
+                      },
+                      {
+                        "table": "cadastro_participante",
+                        "column": "id_cliente",
+                        "type": "number",
+                        "value": "{{$_GET.cliente}}"
+                      },
+                      {
+                        "table": "cadastro_participante",
+                        "column": "senha",
+                        "type": "number",
+                        "value": "{{query.count()+1}}"
+                      },
+                      {
+                        "table": "cadastro_participante",
+                        "column": "status_atendimento",
+                        "type": "text",
+                        "value": "{{'Pendente'}}"
+                      }
+                    ],
+                    "table": "cadastro_participante",
+                    "returning": "id_cad_cliente",
+                    "query": "insert into \"cadastro_participante\" (\"id_cliente\", \"id_inauguracao\", \"senha\", \"status_atendimento\") values (?, ?, ?, ?) returning \"id_cad_cliente\"",
+                    "params": [
+                      {
+                        "name": ":P1",
+                        "type": "expression",
+                        "value": "{{$_GET.inauguracao}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P2",
+                        "type": "expression",
+                        "value": "{{$_GET.cliente}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P3",
+                        "type": "expression",
+                        "value": "{{query.count()+1}}",
+                        "test": ""
+                      },
+                      {
+                        "name": ":P4",
+                        "type": "expression",
+                        "value": "{{'Pendente'}}",
+                        "test": ""
+                      }
+                    ]
+                  }
+                },
+                "meta": [
+                  {
+                    "name": "identity",
+                    "type": "text"
+                  },
+                  {
+                    "name": "affected",
+                    "type": "number"
+                  }
+                ]
+              },
+              {
+                "name": "resposta",
+                "module": "core",
+                "action": "setvalue",
+                "options": {
+                  "key": "resposta",
+                  "value": "Parabéns! Você agora faz parte da nossa história. Sua senha foi criada com sucesso!"
+                },
+                "meta": [],
+                "outputType": "text",
+                "output": true
+              }
+            ]
+          }
+        },
+        "outputType": "boolean"
+      }
+    ]
+  }
+}

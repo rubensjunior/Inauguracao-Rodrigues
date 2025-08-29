@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "$_GET": [
+      {
+        "type": "text",
+        "name": "produto_inauguracao"
+      },
+      {
+        "type": "text",
+        "name": "sort"
+      },
+      {
+        "type": "text",
+        "name": "dir"
+      },
+      {
+        "type": "text",
+        "name": "qtd_solicitada"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "query_produto",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "inauguracao_produto",
+                "column": "id_inaug_produto"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "produto_inaug_id"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "inauguracao_id"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "unidades_disponiveis"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "limite_por_pessoa"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "quantidade_consumida"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "status"
+              },
+              {
+                "table": "inauguracao_produto",
+                "column": "valor"
+              }
+            ],
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{$_GET.produto_inauguracao}}",
+                "test": ""
+              }
+            ],
+            "table": {
+              "name": "inauguracao_produto"
+            },
+            "primary": "id_inaug_produto",
+            "joins": [],
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "inauguracao_produto.id_inaug_produto",
+                  "field": "inauguracao_produto.id_inaug_produto",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{$_GET.produto_inauguracao}}",
+                  "data": {
+                    "table": "inauguracao_produto",
+                    "column": "id_inaug_produto",
+                    "type": "text",
+                    "columnObj": {
+                      "type": "bigIncrements",
+                      "primary": true,
+                      "unique": true,
+                      "nullable": false,
+                      "name": "id_inaug_produto"
+                    }
+                  },
+                  "operation": "="
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "select \"id_inaug_produto\", \"produto_inaug_id\", \"inauguracao_id\", \"unidades_disponiveis\", \"limite_por_pessoa\", \"quantidade_consumida\", \"status\", \"valor\" from \"inauguracao_produto\" where \"inauguracao_produto\".\"id_inaug_produto\" = ?"
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "text",
+            "name": "id_inaug_produto"
+          },
+          {
+            "type": "number",
+            "name": "produto_inaug_id"
+          },
+          {
+            "type": "number",
+            "name": "inauguracao_id"
+          },
+          {
+            "type": "number",
+            "name": "unidades_disponiveis"
+          },
+          {
+            "type": "number",
+            "name": "limite_por_pessoa"
+          },
+          {
+            "type": "number",
+            "name": "quantidade_consumida"
+          },
+          {
+            "type": "text",
+            "name": "status"
+          },
+          {
+            "type": "number",
+            "name": "valor"
+          }
+        ],
+        "outputType": "object",
+        "type": "dbconnector_single"
+      },
+      {
+        "name": "",
+        "module": "core",
+        "action": "condition",
+        "options": {
+          "if": "{{query_produto.quantidade_consumida<query_produto.unidades_disponiveis}}",
+          "then": {
+            "steps": {
+              "name": "",
+              "module": "core",
+              "action": "condition",
+              "options": {
+                "if": "{{query_produto.unidades_disponiveis-query_produto.quantidade_consumida<$_GET.qtd_solicitada}}",
+                "then": {
+                  "steps": {
+                    "name": "insert",
+                    "module": "dbupdater",
+                    "action": "insert",
+                    "options": {
+                      "connection": "db"
+                    },
+                    "meta": [
+                      {
+                        "name": "identity",
+                        "type": "text"
+                      },
+                      {
+                        "name": "affected",
+                        "type": "number"
+                      }
+                    ]
+                  }
+                },
+                "else": {
+                  "steps": {
+                    "name": "resposta",
+                    "module": "core",
+                    "action": "setvalue",
+                    "options": {
+                      "key": "resposta"
+                    },
+                    "meta": [],
+                    "outputType": "text"
+                  }
+                }
+              },
+              "outputType": "boolean"
+            }
+          },
+          "else": {
+            "steps": {
+              "name": "resposta",
+              "module": "core",
+              "action": "setvalue",
+              "options": {
+                "key": "resposta",
+                "value": "Estoque esgotado!"
+              },
+              "meta": [],
+              "outputType": "text"
+            }
+          }
+        },
+        "outputType": "boolean"
+      }
+    ]
+  }
+}

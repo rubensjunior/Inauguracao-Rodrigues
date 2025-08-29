@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "$_GET": [
+      {
+        "type": "text",
+        "name": "sort"
+      },
+      {
+        "type": "text",
+        "name": "dir"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "identity",
+        "module": "auth",
+        "action": "identify",
+        "options": {
+          "provider": "security"
+        },
+        "output": true,
+        "meta": []
+      },
+      {
+        "name": "query",
+        "module": "dbconnector",
+        "action": "single",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "clientes",
+                "column": "nome_completo"
+              },
+              {
+                "table": "clientes",
+                "column": "cpf"
+              },
+              {
+                "table": "clientes",
+                "column": "whatsapp"
+              },
+              {
+                "table": "clientes",
+                "column": "email"
+              }
+            ],
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{identity}}",
+                "test": ""
+              }
+            ],
+            "table": {
+              "name": "clientes"
+            },
+            "primary": "id_cliente",
+            "joins": [],
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "clientes.id_cliente",
+                  "field": "clientes.id_cliente",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{identity}}",
+                  "data": {
+                    "table": "clientes",
+                    "column": "id_cliente",
+                    "type": "text",
+                    "columnObj": {
+                      "type": "bigIncrements",
+                      "primary": true,
+                      "unique": true,
+                      "nullable": false,
+                      "name": "id_cliente"
+                    }
+                  },
+                  "operation": "=",
+                  "table": "clientes"
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            },
+            "query": "select \"nome_completo\", \"cpf\", \"whatsapp\", \"email\" from \"clientes\" where \"clientes\".\"id_cliente\" = ?"
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "text",
+            "name": "nome_completo"
+          },
+          {
+            "type": "text",
+            "name": "cpf"
+          },
+          {
+            "type": "text",
+            "name": "whatsapp"
+          },
+          {
+            "type": "text",
+            "name": "email"
+          }
+        ],
+        "outputType": "object"
+      }
+    ]
+  }
+}

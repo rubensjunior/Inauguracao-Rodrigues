@@ -3,6 +3,10 @@
     "$_GET": [
       {
         "type": "text",
+        "name": "id_regional"
+      },
+      {
+        "type": "text",
         "name": "sort"
       },
       {
@@ -13,7 +17,7 @@
   },
   "exec": {
     "steps": {
-      "name": "query",
+      "name": "query_inauguracao",
       "module": "dbconnector",
       "action": "select",
       "options": {
@@ -21,6 +25,10 @@
         "sql": {
           "type": "SELECT",
           "columns": [
+            {
+              "table": "inauguracao",
+              "column": "id_inauguracao"
+            },
             {
               "table": "inauguracao",
               "column": "nome_loja"
@@ -55,11 +63,11 @@
             },
             {
               "table": "inauguracao",
-              "column": "status"
+              "column": "data_fim"
             },
             {
               "table": "inauguracao",
-              "column": "data_fim"
+              "column": "status"
             },
             {
               "table": "inauguracao",
@@ -74,26 +82,82 @@
               "column": "bairro"
             }
           ],
-          "params": [],
+          "params": [
+            {
+              "operator": "equal",
+              "type": "expression",
+              "name": ":P1",
+              "value": "{{$_GET.id_regional}}",
+              "test": ""
+            }
+          ],
           "table": {
             "name": "inauguracao"
           },
           "primary": "id_inauguracao",
           "joins": [],
-          "sub": {
-            "produto": {
-              "table": {
-                "name": "inauguracao_produto",
-                "alias": "produto"
+          "query": "select \"id_inauguracao\", \"nome_loja\", \"cidade\", \"uf\", \"endereco_completo\", \"complemento\", \"cep\", \"cod_filial\", \"data_inicio\", \"data_fim\", \"status\", \"total_senhas\", \"regional\", \"bairro\" from \"inauguracao\" where \"inauguracao\".\"regional\" = ? and \"inauguracao\".\"status\" = ?",
+          "wheres": {
+            "condition": "AND",
+            "rules": [
+              {
+                "id": "inauguracao.regional",
+                "field": "inauguracao.regional",
+                "type": "double",
+                "operator": "equal",
+                "value": "{{$_GET.id_regional}}",
+                "data": {
+                  "table": "inauguracao",
+                  "column": "regional",
+                  "type": "number",
+                  "columnObj": {
+                    "type": "reference",
+                    "primary": false,
+                    "unique": false,
+                    "nullable": true,
+                    "references": "id_regional",
+                    "inTable": "regional",
+                    "referenceType": "bigInteger",
+                    "onUpdate": "NO ACTION",
+                    "onDelete": "NO ACTION",
+                    "name": "regional"
+                  }
+                },
+                "operation": "="
               },
-              "key": "inauguracao_id"
-            }
-          },
-          "query": "select \"nome_loja\", \"cidade\", \"uf\", \"endereco_completo\", \"complemento\", \"cep\", \"cod_filial\", \"data_inicio\", \"status\", \"data_fim\", \"total_senhas\", \"regional\", \"bairro\" from \"inauguracao\""
+              {
+                "id": "inauguracao.status",
+                "field": "inauguracao.status",
+                "type": "string",
+                "operator": "equal",
+                "value": "Ativo",
+                "data": {
+                  "table": "inauguracao",
+                  "column": "status",
+                  "type": "text",
+                  "columnObj": {
+                    "type": "string",
+                    "maxLength": -5,
+                    "primary": false,
+                    "unique": false,
+                    "nullable": true,
+                    "name": "status"
+                  }
+                },
+                "operation": "="
+              }
+            ],
+            "conditional": null,
+            "valid": true
+          }
         }
       },
       "output": true,
       "meta": [
+        {
+          "type": "text",
+          "name": "id_inauguracao"
+        },
         {
           "type": "text",
           "name": "nome_loja"
@@ -127,12 +191,12 @@
           "name": "data_inicio"
         },
         {
-          "type": "text",
-          "name": "status"
-        },
-        {
           "type": "datetime",
           "name": "data_fim"
+        },
+        {
+          "type": "text",
+          "name": "status"
         },
         {
           "type": "number",
@@ -145,48 +209,6 @@
         {
           "type": "text",
           "name": "bairro"
-        },
-        {
-          "name": "produto",
-          "type": "array",
-          "sub": [
-            {
-              "type": "text",
-              "name": "id_inaug_produto"
-            },
-            {
-              "type": "datetime",
-              "name": "created_at_inaug_produto"
-            },
-            {
-              "type": "number",
-              "name": "produto_inaug_id"
-            },
-            {
-              "type": "number",
-              "name": "inauguracao_id"
-            },
-            {
-              "type": "number",
-              "name": "unidades_disponiveis"
-            },
-            {
-              "type": "number",
-              "name": "limite_por_pessoa"
-            },
-            {
-              "type": "number",
-              "name": "quantidade_consumida"
-            },
-            {
-              "type": "text",
-              "name": "status"
-            },
-            {
-              "type": "number",
-              "name": "valor"
-            }
-          ]
         }
       ],
       "outputType": "array"

@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "$_GET": [
+      {
+        "type": "text",
+        "name": "sort"
+      },
+      {
+        "type": "text",
+        "name": "dir"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "identity",
+        "module": "auth",
+        "action": "identify",
+        "options": {
+          "provider": "security"
+        },
+        "output": true,
+        "meta": []
+      },
+      {
+        "name": "query",
+        "module": "dbconnector",
+        "action": "select",
+        "options": {
+          "connection": "db",
+          "sql": {
+            "type": "SELECT",
+            "columns": [
+              {
+                "table": "inauguracao",
+                "column": "nome_loja"
+              },
+              {
+                "table": "cadastro_participante",
+                "column": "senha"
+              },
+              {
+                "table": "cadastro_participante",
+                "column": "status_atendimento"
+              }
+            ],
+            "params": [
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P1",
+                "value": "{{identity}}",
+                "test": ""
+              },
+              {
+                "operator": "equal",
+                "type": "expression",
+                "name": ":P2",
+                "value": "{{'Pendente'}}",
+                "test": ""
+              }
+            ],
+            "table": {
+              "name": "cadastro_participante"
+            },
+            "primary": "id_cad_cliente",
+            "joins": [
+              {
+                "table": "inauguracao",
+                "column": "*",
+                "type": "INNER",
+                "clauses": {
+                  "condition": "AND",
+                  "rules": [
+                    {
+                      "table": "inauguracao",
+                      "column": "id_inauguracao",
+                      "operation": "=",
+                      "operator": "equal",
+                      "value": {
+                        "table": "cadastro_participante",
+                        "column": "id_inauguracao",
+                        "type": "number"
+                      }
+                    }
+                  ]
+                },
+                "primary": "id_inauguracao"
+              }
+            ],
+            "query": "select \"inauguracao\".\"nome_loja\", \"cadastro_participante\".\"senha\", \"cadastro_participante\".\"status_atendimento\" from \"cadastro_participante\" inner join \"inauguracao\" on \"inauguracao\".\"id_inauguracao\" = \"cadastro_participante\".\"id_inauguracao\" where \"cadastro_participante\".\"id_cliente\" = ? and \"cadastro_participante\".\"status_atendimento\" = ?",
+            "wheres": {
+              "condition": "AND",
+              "rules": [
+                {
+                  "id": "cadastro_participante.id_cliente",
+                  "field": "cadastro_participante.id_cliente",
+                  "type": "double",
+                  "operator": "equal",
+                  "value": "{{identity}}",
+                  "data": {
+                    "table": "cadastro_participante",
+                    "column": "id_cliente",
+                    "type": "number",
+                    "columnObj": {
+                      "type": "reference",
+                      "primary": false,
+                      "unique": false,
+                      "nullable": true,
+                      "references": "id_cliente",
+                      "inTable": "clientes",
+                      "referenceType": "bigInteger",
+                      "onUpdate": "NO ACTION",
+                      "onDelete": "NO ACTION",
+                      "name": "id_cliente"
+                    }
+                  },
+                  "operation": "=",
+                  "table": "cadastro_participante"
+                },
+                {
+                  "id": "cadastro_participante.status_atendimento",
+                  "field": "cadastro_participante.status_atendimento",
+                  "type": "string",
+                  "operator": "equal",
+                  "value": "{{'Pendente'}}",
+                  "data": {
+                    "table": "cadastro_participante",
+                    "column": "status_atendimento",
+                    "type": "text",
+                    "columnObj": {
+                      "type": "string",
+                      "maxLength": -5,
+                      "primary": false,
+                      "unique": false,
+                      "nullable": true,
+                      "name": "status_atendimento"
+                    }
+                  },
+                  "operation": "=",
+                  "table": "cadastro_participante"
+                }
+              ],
+              "conditional": null,
+              "valid": true
+            }
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "text",
+            "name": "nome_loja"
+          },
+          {
+            "type": "number",
+            "name": "senha"
+          },
+          {
+            "type": "text",
+            "name": "status_atendimento"
+          }
+        ],
+        "outputType": "array"
+      }
+    ]
+  }
+}
