@@ -22,12 +22,6 @@
 </head>
 
 <body is="dmx-app" id="cliente">
-
-
-
-
-
-
   <div is="dmx-browser" id="browser1"></div>
   <dmx-notifications id="notifies1"></dmx-notifications>
   <dmx-serverconnect id="usuario_logado" url="/api/cliente/indetificar-cliente"></dmx-serverconnect>
@@ -36,6 +30,65 @@
   <dmx-serverconnect id="ofertas" url="/api/ofertas" noload="true"></dmx-serverconnect>
   <dmx-serverconnect id="senha_atendimento" url="/api/gerar-senha" noload="true" dmx-on:error="notifies1.danger('OPS, ocorreu um erro! Entre em contato com nosso time!')" dmx-on:success="run([{condition:{outputType:'boolean',if:`senha_atendimento.data.resposta==\'Você já está cadastrado nesta inauguração!\'`,then:{steps:{run:{outputType:'text',action:`notifies1.warning(senha_atendimento.data.resposta)`}}}}},{condition:{outputType:'boolean',if:`senha_atendimento.data.resposta==\'Parabéns! Você agora faz parte da nossa história. Sua senha foi criada com sucesso!\'`,then:{steps:[{run:{outputType:'text',action:`notifies1.success(\'Parabéns! Você agora faz parte da nossa história. Sua senha foi criada com sucesso!\')`}},{wait:{delay:2000}},{run:{outputType:'text',action:`browser1.reload()`}}]}}}])"></dmx-serverconnect>
   <dmx-serverconnect id="listar_senha" url="/api/listar-senha"></dmx-serverconnect>
+  <style>
+    :root {
+      --rc-primary: #0d6efd;
+      --rc-primary-light: #3a86ff;
+      --rc-ink: #0F172A;
+      --rc-bg: #F6F7FB;
+      --rc-card: #FFFFFF;
+      --rc-radius: 16px;
+      --rc-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+    }
+
+    /* Header simples azul */
+    .rc-header {
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-light) 100%);
+      color: #fff;
+      padding: calc(env(safe-area-inset-top, 0) + 12px) 16px 12px;
+      box-shadow: var(--rc-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .rc-header .welcome {
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rc-header .btn-logout {
+      border: none;
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .18);
+      color: #fff;
+      transition: background .2s;
+    }
+
+    .rc-header .btn-logout:hover {
+      background: rgba(255, 255, 255, .28);
+    }
+  </style>
+
+  <!-- HEADER SIMPLES -->
+  <header class="rc-header">
+    <div class="welcome">
+      Bem-vindo, {{usuario_logado.data.identity.nome}}
+    </div>
+    <button class="btn-logout" dmx-on:click="logout.run()">Sair</button>
+  </header>
+
+
   <main is="dmx-view" id="content" class="mt-4">
     <%- await include(content, locals); %>
   </main>

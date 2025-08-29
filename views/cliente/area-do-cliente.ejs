@@ -1,4 +1,298 @@
 <!-- Wappler include head-page="layouts/cliente" fontawesome_5="cdn" bootstrap5="local" is="dmx-app" id="areadocliente" appConnect="local" components="{dmxBootstrap5TableGenerator:{},dmxFormatter:{},dmxBootstrap5Offcanvas:{},dmxDataTraversal:{}}" -->
+<!-- ====== ESTILOS (NA PRÓPRIA PÁGINA) ====== -->
+<style>
+    :root {
+        --rc-primary: #0d6efd;
+        /* Bootstrap primary */
+        --rc-success: #198754;
+        /* Bootstrap success */
+        --rc-ink: #0F172A;
+        /* título/texto forte */
+        --rc-muted: #64748B;
+        /* texto auxiliar */
+        --rc-bg: #F6F7FB;
+        /* fundo claro da página */
+        --rc-card: #FFFFFF;
+        /* fundo dos cards */
+        --rc-radius: 16px;
+        --rc-shadow: 0 6px 18px rgba(15, 23, 42, .06);
+    }
+
+    /* página */
+    body {
+        background: var(--rc-bg);
+    }
+
+    .container-xxl {
+        padding-bottom: 80px;
+    }
+
+    /* Banner / hero da fila */
+    .queue-hero {
+        background: linear-gradient(135deg, var(--rc-success) 0%, #1fbf7a 100%);
+        border-radius: var(--rc-radius);
+        box-shadow: var(--rc-shadow);
+    }
+
+    .queue-hero h4 {
+        font-weight: 700;
+        letter-spacing: .2px;
+        opacity: .95
+    }
+
+    .queue-hero h1 {
+        line-height: 1.15
+    }
+
+    .queue-hero .texto-senha {
+        font-size: clamp(28px, 6.5vw, 44px);
+        font-weight: 800;
+        letter-spacing: .5px;
+    }
+
+    .loja-atual {
+        text-shadow: 0 1px 0 rgba(0, 0, 0, .08);
+        font-weight: 800;
+    }
+
+    /* seletor regional */
+    .region-picker {
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+    }
+
+    .region-picker .input-group {
+        background: var(--rc-card);
+        border-radius: var(--rc-radius);
+        box-shadow: var(--rc-shadow);
+        overflow: hidden;
+    }
+
+    .region-picker .form-select {
+        border: none;
+        padding: 14px 12px;
+        font-size: 16px;
+    }
+
+    .region-picker .btn {
+        border: none;
+        padding: 12px 16px;
+        font-weight: 600;
+    }
+
+    /* cards de inauguração */
+    .rc-card {
+        background: var(--rc-card);
+        border: 0;
+        border-radius: var(--rc-radius);
+        box-shadow: var(--rc-shadow);
+        overflow: hidden;
+    }
+
+    .rc-card .card-body {
+        padding: 16px 16px 8px;
+    }
+
+    .rc-card .card-title {
+        color: var(--rc-ink);
+    }
+
+    .rc-card .card-text {
+        color: var(--rc-muted);
+        margin-bottom: .25rem;
+    }
+
+    /* ===== Vitrine de Ofertas ===== */
+    /* Container vira uma grid responsiva */
+    #repeat1 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-top: 8px;
+    }
+
+    @media (min-width: 480px) {
+        #repeat1 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 768px) {
+        #repeat1 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Card da oferta */
+    #card_produto {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        border: 1px solid #EEF2F7;
+        border-radius: 14px;
+        padding: 10px;
+        background: #fff;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, .05);
+    }
+
+    /* Miniatura 1:1 no topo */
+    .offer-thumb {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1/1;
+        /* mantém quadrado */
+        border-radius: 12px;
+        overflow: hidden;
+        background: #F3F4F6;
+    }
+
+    .offer-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Informações abaixo da imagem */
+    #dados_produto {
+        margin-top: 10px;
+    }
+
+    #dados_produto h5 {
+        font-size: 15.5px;
+        line-height: 1.25;
+        margin: 0 0 6px;
+        color: var(--rc-ink);
+        min-height: 38px;
+        /* 2 linhas no máx, ajuda a alinhar cards */
+    }
+
+    .offer-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .offer-meta .limit {
+        font-size: 12.5px;
+        color: var(--rc-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .price-badge {
+        font-weight: 800;
+        font-size: 16px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(13, 110, 253, .08);
+        /* tom do primary mais leve */
+        color: #0d6efd;
+    }
+
+    /* rodapé com botões 100% no mobile */
+    .rc-card .card-footer {
+        background: #fff;
+        border-top: 1px solid #EEF2F7;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr;
+    }
+
+    .rc-card .card-footer .btn {
+        width: 100%;
+        font-weight: 700;
+        padding: 12px;
+    }
+
+    .rc-card .card-footer .btn.me-3 {
+        margin-right: 0 !important;
+    }
+
+    /* a partir de 420px, botões lado a lado */
+    @media (min-width: 420px) {
+        .rc-card .card-footer {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<!-- ====== CONTEÚDO ====== -->
+<dmx-data-detail id="data_inauguracao" dmx-bind:data="inauguracoes.data.query_inauguracao" key="id_inauguracao"></dmx-data-detail>
+
+<div class="container-xxl">
+
+    <!-- Banner com senha -->
+    <div class="row mb-3 p-2 text-white">
+        <div class="col queue-hero p-3 rounded-3">
+            <h4 class="text-center m-0">Fila de atendimento</h4>
+            <h1 class="text-center loja-atual">{{listar_senha.data.query[0].nome_loja}}</h1>
+            <h1 class="text-center texto-senha">Senha: {{listar_senha.data.query[0].senha}}</h1>
+        </div>
+    </div>
+
+    <!-- Seletor regional (sticky no mobile) -->
+    <div class="row region-picker mb-3">
+        <div class="col">
+            <div class="d-flex">
+                <div class="input-group">
+                    <select class="form-select" id="regional" aria-label="Example select with button addon" dmx-bind:options="regionais.data.query_regionais" optiontext="nome_regional" optionvalue="id_regional" name="regional">
+                        <option selected="" value="">Escolha a localidade</option>
+                    </select>
+                    <button class="btn btn-primary btn-lg" type="button" dmx-on:click="inauguracoes.load({id_regional: regional.selectedValue},true)">Selecionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de inaugurações -->
+    <div class="row" is="dmx-repeat" id="repeat_inauguracao" dmx-bind:repeat="inauguracoes.data.query_inauguracao" key="id_inauguracao" dmx-show="!inauguracoes.data.query_inauguracao.isEmpty()">
+        <div class="col">
+            <div class="card rc-card">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold m-0">{{nome_loja}}</h4>
+                    <p class="card-text">{{cidade}} | {{uf}}</p>
+                    <p class="card-text">{{"Endereço: "+endereco_completo}}</p>
+
+                    <!-- Ofertas (vitrine) -->
+                    <div is="dmx-repeat" id="repeat1" dmx-bind:repeat="ofertas.data.query_ofertas" key="id_inaug_produto">
+                        <div id="card_produto">
+                            <div class="offer-thumb">
+                                <img class="img-fluid" dmx-bind:src="'https://sgi.rodriguescolchoes.com.br/'+url_imagens" alt="{{nome_produto}}">
+                            </div>
+                            <div id="dados_produto">
+                                <h5>{{nome_produto}}</h5>
+                                <div class="offer-meta">
+                                    <span class="limit">{{limite_por_pessoa}} produto por CPF</span>
+                                    <span class="price-badge">R${{valor}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Ofertas -->
+
+                </div>
+
+                <!-- Ações -->
+                <div class="card-footer gap-3">
+                    <a class="btn btn-outline-primary me-3" data-bs-target="undefined" dmx-on:click="ofertas.load({id_inauguracao: id_inauguracao})">Ver ofertas</a>
+                    <a class="btn btn-primary" data-bs-target="undefined" dmx-on:click="senha_atendimento.load({inauguracao: id_inauguracao, cliente: usuario_logado.data.identity})">Gerar minha senha</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<!--
 <dmx-data-detail id="data_inauguracao" dmx-bind:data="inauguracoes.data.query_inauguracao" key="id_inauguracao"></dmx-data-detail>
 <div class="container-xxl">
     <div class="row mb-3 p-2 text-white">
@@ -51,5 +345,5 @@
         </div>
     </div>
 
-</div>
+</div>-->
 <meta name="ac:route" content="/security/f/area-do-cliente">
