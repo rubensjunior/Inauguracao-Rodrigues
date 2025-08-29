@@ -15,6 +15,11 @@
       "path": "/security/f/login",
       "page": "login",
       "layout": "main"
+    },
+    {
+      "path": "/backoffice/fila-inauguracao",
+      "page": "backoffice/fila-inauguracao",
+      "layout": "colaborador"
     }
   ],
   "layouts": {
