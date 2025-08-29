@@ -16,5 +16,10 @@
       "page": "login",
       "layout": "main"
     }
-  ]
+  ],
+  "layouts": {
+    "cliente": {
+      "exec": "/api/pagina-restrita"
+    }
+  }
 }

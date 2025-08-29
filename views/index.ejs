@@ -10,7 +10,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="form_login">
+                <form id="form_login" is="dmx-serverconnect-form" method="post" action="/api/login" dmx-on:error="notifies1.danger('OPS, Ocorreu um erro! Fale com o nosso time para obter ajuda!')" dmx-on:success="browser1.goto('/security/f/area-do-cliente')">
                     <div class="form-group mb-3"> <label for="cpf_login" class="form-label">Insira seu CPF</label>
                         <input type="text" class="form-control form-control-lg" id="cpf_login" name="cpf_login" aria-describedby="input3_help">
                     </div>
