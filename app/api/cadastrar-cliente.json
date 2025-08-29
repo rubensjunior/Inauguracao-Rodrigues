@@ -120,7 +120,6 @@
             "query": "select \"cpf\", \"id_cliente\" from \"clientes\" where \"clientes\".\"cpf\" = ?"
           }
         },
-        "output": true,
         "meta": [
           {
             "type": "text",
@@ -138,7 +137,7 @@
         "module": "core",
         "action": "condition",
         "options": {
-          "if": "{{query}}",
+          "if": "{{query.cpf==$_POST.cpf}}",
           "then": {
             "steps": {
               "name": "resposta",
@@ -152,17 +151,8 @@
               "outputType": "text",
               "output": true
             }
-          }
-        },
-        "outputType": "boolean"
-      },
-      {
-        "name": "",
-        "module": "core",
-        "action": "condition",
-        "options": {
-          "if": "{{!query}}",
-          "then": {
+          },
+          "else": {
             "steps": [
               {
                 "name": "insert",

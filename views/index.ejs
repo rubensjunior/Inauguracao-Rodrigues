@@ -1,4 +1,4 @@
-<!-- Wappler include head-page="layouts/main" fontawesome_5="cdn" bootstrap5="local" is="dmx-app" id="index" appConnect="local" components="{dmxDatetime:{},dmxValue:{},dmxBootstrap5Alert:{},dmxBootstrap5Navigation:{},dmxSlideshow:{},dmxBootstrap5Modal:{},dmxValidator:{},dmxServerConnect:{}}" -->
+<!-- Wappler include head-page="layouts/main" fontawesome_5="cdn" bootstrap5="local" is="dmx-app" id="index" appConnect="local" components="{dmxDatetime:{},dmxValue:{},dmxBootstrap5Alert:{},dmxBootstrap5Navigation:{},dmxSlideshow:{},dmxBootstrap5Modal:{},dmxValidator:{},dmxServerConnect:{},dmxFormatter:{}}" -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -13,7 +13,6 @@
             '$1.$2.$3-$4'
         );
     }
-    
     // Function to apply WhatsApp/phone mask
     function phoneMask(value) {
         return value
@@ -23,7 +22,6 @@
             .replace(/(-\d{4})\d+?$/, '$1')
             .substring(0, 15);
     }
-
     // Apply masks to inputs
     ['input5', 'cpf'].forEach(function(id) {
         const input = document.getElementById(id);
@@ -33,7 +31,6 @@
             });
         }
     });
-
     const whatsappInput = document.getElementById('whatsapp');
     if (whatsappInput) {
         whatsappInput.addEventListener('input', function(e) {
@@ -42,23 +39,15 @@
     }
 });
 </script>
-
 <!-- Login Modal -->
 <div class="modal" id="modal_login" is="dmx-bs5-modal" tabindex="-1">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Acessar sua conta</h5>
+                <h5 class="modal-title">Acesse sua conta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="form1">
-                    <div class="form-group mb-3">
-                        <label for="input5" class="form-label">Use seu CPF para acessar sua conta</label>
-                        <input type="text" class="form-control py-3" id="input5" name="input5" required data-msg-required="Por favor, digite seu CPF" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" data-msg-pattern="CPF inválido" placeholder="XXX.XXX.XXX-XX">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                </form>
             </div>
             <div class="modal-footer d-flex justify-content-start flex-row">
                 <button type="button" class="btn btn-primary">Fazer login</button>
@@ -66,7 +55,6 @@
         </div>
     </div>
 </div>
-
 <!-- Registration Modal -->
 <div class="modal fade" id="modal_criar_conta" is="dmx-bs5-modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -77,8 +65,6 @@
             </div>
             <div class="modal-body">
                 <form id="criar_conta" class="needs-validation" novalidate="" is="dmx-serverconnect-form" method="post" action="/api/cadastrar-cliente" dmx-on:error="handleFormError()" dmx-on:success="resetFormAndSteps();modal_criar_conta.hide();notifies1.success('Formulário cadastrado com sucesso!')">
-
-                    <!-- Step 1: Nome -->
                     <div class="form-step" id="step1">
                         <h5 class="mb-3">Nome Completo</h5>
                         <div class="form-group mb-3">
@@ -86,14 +72,11 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-
-                    <!-- Step 2: CPF -->
                     <div class="form-step" id="step2" style="display: none;">
                         <h5 class="mb-3">Seu CPF</h5>
                         <div class="form-group mb-3">
                             <input type="text" class="form-control py-3" id="cpf" name="cpf" required data-msg-required="Por favor, digite seu CPF" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" data-msg-pattern="CPF inválido">
                             <div class="invalid-feedback"></div>
-                            <!-- CPF Duplicate Message (shown via API response) -->
                             <div class="alert alert-warning mt-2" id="cpf_duplicate_message" style="display: none;">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <strong>Atenção!</strong> Este CPF já está cadastrado em nosso sistema.
@@ -101,8 +84,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Step 3: WhatsApp -->
                     <div class="form-step" id="step3" style="display: none;">
                         <h5 class="mb-3">Seu WhatsApp</h5>
                         <div class="form-group mb-3">
@@ -110,22 +91,17 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-
-                    <!-- Step 4: Email and Terms -->
                     <div class="form-step" id="step4" style="display: none;">
                         <h5 class="mb-3">Seu e-mail</h5>
                         <div class="form-group mb-4">
                             <input type="email" class="form-control py-3" id="email" name="email" required data-msg-required="Por favor, digite seu e-mail" data-msg-email="E-mail inválido" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" data-msg-pattern="Digite um e-mail válido">
                             <div class="invalid-feedback"></div>
                         </div>
-
-                        <!-- CPF Duplicate Alert in Step 4 (shown via API response) -->
                         <div class="alert alert-warning mb-3" id="cpf_step4_alert" style="display: none;">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             <strong>Atenção!</strong> Este CPF já está cadastrado em nosso sistema.
                             Você pode alterar o CPF voltando às etapas anteriores ou usar a opção "Entrar" se já possui conta.
                         </div>
-
                         <h6 class="mb-3">Termos e Condições</h6>
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="terms" name="terms" required data-msg-required="Você precisa aceitar os termos para continuar">
@@ -152,315 +128,143 @@
         </div>
     </div>
 </div>
-
 <!-- Rest of the page content -->
 <header class="container-fluid fixed-top mt-5 pt-4" id="nav_bar">
     <div class="container-xxl bg-white rounded-3">
-        <div class="row">
-            <div class="col px-3">
-                <nav class="navbar navbar-expand-lg">
-                    <a class="navbar-brand ms-auto" href="#">
-                        <img src="/assets/images/LOGO COLORIDO.png" width="120"></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar1_collapse" aria-controls="navbar1_collapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbar1_collapse">
-                        <div class="navbar-nav gap-3">
-                            <a class="nav-item nav-link fw-bolder">Regulamento</a>
-                            <a class="nav-item nav-link fw-bolder">Termo de Participação</a>
-                            <a class="nav-item nav-link fw-bolder">Contato</a>
-                        </div>
-                        <div class="navbar-nav">
-                            <a class="nav-item nav-link">
-                                <button id="btn3" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modal_login">Entrar</button>
-                            </a>
-                            <a class="nav-item nav-link">
-                                <button id="btn3" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modal_criar_conta">Cadastrar</button>
-                            </a>
-                        </div>
+        <nav class="navbar navbar-expand-lg py-2">
+            <div class="container-fluid px-0">
+                <!-- Logo on the left -->
+                <a class="navbar-brand" href="#">
+                    <img src="/assets/images/LOGO COLORIDO.png" width="98" alt="Logo">
+                </a>
+                <!-- Toggle button on the right -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar1_collapse" aria-controls="navbar1_collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Collapsible content -->
+                <div class="collapse navbar-collapse mt-2 mt-lg-0 justify-content-center" id="navbar1_collapse">
+                    <!-- Navigation links -->
+                    <div class="navbar-nav gap-3 me-auto mb-2 mb-lg-0">
+                        <a class="nav-item nav-link fw-bolder" href="#">Regulamento</a>
+                        <a class="nav-item nav-link fw-bolder" href="#">Termo de Participação</a>
+                        <a class="nav-item nav-link fw-bolder" href="#">Contato</a>
                     </div>
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
-
-<header class="hero container-fluid vh-100" id="hero_section">
-    <div class="container-fluid">
-        <div class="row align-items-center">
-            <div class="col align-self-center">
-                <div class="marquee bg-black">
-                    <span>
-                        <h6 class="text-light m-0">Fancy display heading</h6>
-                    </span>
+                    <!-- Buttons -->
+                    <div class="d-grid d-lg-flex gap-2">
+                        <button id="btn_login" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_login">Entrar</button>
+                        <button id="btn_cadastro" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modal_criar_conta">Cadastrar</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </nav>
     </div>
 </header>
+<header class="hero vh-100" id="hero_section">
+    <div class="d-flex bg-black py-2 gap-3 flex-row" id="animated_bar">
+        <div class="marquee-container" style="overflow:hidden;display:flex;align-items:center;width:100%;">
+            <div class="marquee-text" style="display:flex;gap:4rem;align-items:center;min-width:max-content;">
+                <h4 class="m-0 text-white my-1">Ofertas de inauguração imperdíveis é só na Rodrigues Colchões!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+                <h4 class="m-0 text-white my-1">Participe do sorteio exclusivo!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+                <h4 class="m-0 text-white my-1">Garanta seus benefícios na melhor loja da região!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+                <h4 class="m-0 text-white my-1">Ofertas de inauguração imperdíveis é só na Rodrigues Colchões!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+                <h4 class="m-0 text-white my-1">Participe do sorteio exclusivo!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+                <h4 class="m-0 text-white my-1">Garanta seus benefícios na melhor loja da região!</h4>
+                <img src="/assets/images/FAVICON-PRETO.png" alt="Prêmio" style="height:32px;width:auto;">
+            </div>
+        </div>
+    </div>
 
-<style>
-    .form-step {
-        transition: all 0.3s ease-in-out;
-    }
+    <style>
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+        }
 
-    .invalid-feedback {
-        display: none;
-    }
+        .marquee-text {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            white-space: nowrap;
+            min-width: max-content;
+            will-change: transform;
+            animation: marquee-slide 36s linear infinite;
+            font-size: 1.2rem;
+            box-sizing: content-box;
+        }
 
-    .was-validated .form-control:invalid~.invalid-feedback,
-    .form-control.is-invalid~.invalid-feedback,
-    .was-validated .form-check-input:invalid~.invalid-feedback,
-    .form-check-input.is-invalid~.invalid-feedback {
-        display: block;
-    }
+        @keyframes marquee-slide {
+            0% {
+                transform: translateX(0);
+            }
 
-    .form-control.is-valid {
-        border-color: #198754;
-    }
-</style>
+            100% {
+                transform: translateX(-50%);
+            }
+        }
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Make these variables global
-        window.currentStep = 1;
-        window.totalSteps = 4;
-        
-        let currentStep = window.currentStep;
-        const totalSteps = window.totalSteps;
+        .form-step {
+            transition: all 0.3s ease-in-out;
+        }
 
-        // Function to validate the current step
-        function validateCurrentStep() {
-            const currentStepDiv = document.getElementById('step' + window.currentStep);
-            if (!currentStepDiv) return false;
-            const inputs = currentStepDiv.querySelectorAll('input');
+        .invalid-feedback {
+            display: none;
+        }
+
+        .was-validated .form-control:invalid~.invalid-feedback,
+        .form-control.is-invalid~.invalid-feedback,
+        .was-validated .form-check-input:invalid~.invalid-feedback,
+        .form-check-input.is-invalid~.invalid-feedback {
+            display: block;
+        }
+
+        .form-control.is-valid {
+            border-color: #198754;
+        }
+    </style>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function switchStep(step) {
+            // Validate current step before proceeding
+            const currentStepElement = document.getElementById(`step${currentStep}`);
+            const inputs = currentStepElement.querySelectorAll('input');
             let isValid = true;
 
             inputs.forEach(input => {
-                // Remove previous validation classes
-                input.classList.remove('is-valid', 'is-invalid');
-                
-                // Only validate required fields and visible inputs
-                if (input.hasAttribute('required')) {
-                    const value = input.value.trim();
-                    
-                    // Check if field is empty
-                    if (value === '') {
-                        console.log('Field', input.id, 'is required but empty');
-                        isValid = false;
-                        input.classList.add('is-invalid');
-                        showError(input, input.getAttribute('data-msg-required') || 'Campo obrigatório');
-                    } 
-                    // Check pattern validation for filled fields
-                    else if (input.pattern && !new RegExp(input.pattern).test(value)) {
-                        console.log('Field', input.id, 'has invalid pattern:', value);
-                        isValid = false;
-                        input.classList.add('is-invalid');
-                        showError(input, input.getAttribute('data-msg-pattern') || 'Formato inválido');
-                    }
-                    // Field is valid
-                    else {
-                        input.classList.add('is-valid');
-                        hideError(input);
-                    }
+                if (!input.checkValidity()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
                 }
             });
 
-            console.log('Step', window.currentStep, 'validation result:', isValid);
-            return isValid;
+            if (!isValid) return;
+
+            document.getElementById(`step${currentStep}`).style.display = 'none';
+            document.getElementById(`step${step}`).style.display = 'block';
+            currentStep = step;
+
+            // Update buttons
+            document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
+            document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
         }
 
-        function showError(input, message) {
-            const feedback = input.nextElementSibling;
-            if (feedback && feedback.classList.contains('invalid-feedback')) {
-                feedback.textContent = message;
-                feedback.style.display = 'block';
+        function prevStep() {
+            if (currentStep > 1) {
+                switchStep(currentStep - 1);
             }
         }
 
-        function hideError(input) {
-            const feedback = input.nextElementSibling;
-            if (feedback && feedback.classList.contains('invalid-feedback')) {
-                feedback.style.display = 'none';
-            }
-        }
-
-        // Function to reset form and steps
-        window.resetFormAndSteps = function() {
-            console.log('Resetting form and steps...');
-            
-            // First hide all steps
-            for (let i = 1; i <= window.totalSteps; i++) {
-                const stepEl = document.getElementById('step' + i);
-                if (stepEl) stepEl.style.display = 'none';
-            }
-            
-            // Reset to step 1
-            const step1 = document.getElementById('step1');
-            if (step1) {
-                step1.style.display = 'block';
-            }
-            window.currentStep = 1;
-            
-            // Clear all validation states
-            document.querySelectorAll('#criar_conta input').forEach(input => {
-                input.classList.remove('is-valid', 'is-invalid');
-                input.value = '';
-                hideError(input);
-            });
-            
-            // Reset checkboxes specifically
-            document.querySelectorAll('#criar_conta input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Hide CPF duplicate message
-            const cpfDuplicateMessage = document.getElementById('cpf_duplicate_message');
-            if (cpfDuplicateMessage) cpfDuplicateMessage.style.display = 'none';
-            
-            // Hide CPF step 4 alert
-            const cpfStep4Alert = document.getElementById('cpf_step4_alert');
-            if (cpfStep4Alert) cpfStep4Alert.style.display = 'none';
-            
-            // Update UI buttons
-            updateUI();
-            console.log('Form and steps reset complete');
-        };
-
-        // Function to handle form error (CPF duplicate check)
-        window.handleFormError = function() {
-            console.log('Form error occurred');
-            const formComponent = dmx.app.find('criar_conta');
-            
-            if (formComponent && formComponent.lastError) {
-                const errorMessage = formComponent.lastError.message;
-                console.log('Error message:', errorMessage);
-                
-                // Check if error is about CPF duplicate
-                if (errorMessage && (errorMessage.includes('CPF') || errorMessage.includes('cadastrado') || errorMessage.includes('existe'))) {
-                    // Show CPF duplicate message
-                    const cpfDuplicateMessage = document.getElementById('cpf_duplicate_message');
-                    const cpfStep4Alert = document.getElementById('cpf_step4_alert');
-                    
-                    if (cpfDuplicateMessage) {
-                        cpfDuplicateMessage.style.display = 'block';
-                        
-                        // Mark CPF field as invalid
-                        const cpfInput = document.getElementById('cpf');
-                        if (cpfInput) {
-                            cpfInput.classList.remove('is-valid');
-                            cpfInput.classList.add('is-invalid');
-                        }
-                    }
-                    
-                    // Also show alert in step 4 if we're on step 4
-                    if (window.currentStep === 4 && cpfStep4Alert) {
-                        cpfStep4Alert.style.display = 'block';
-                    }
-                    
-                    // Don't navigate away from step 4, just show the alert
-                    if (window.currentStep !== 4) {
-                        
-                        // Navigate back to step 2 to show the message
-                        switchStep(2);
-                    }
-                }
-            }
-        };
-
-        // Expose functions to window for button onclick access
-        window.switchStep = function(step) {
-            if (step < 1 || step > totalSteps) return;
-
-            console.log('Trying to switch from step', window.currentStep, 'to step', step);
-            // If moving forward, validate current step
-            if (step > window.currentStep) {
-                const isValid = validateCurrentStep();
-                console.log('Validation result for step', window.currentStep, ':', isValid);
-                if (!isValid) {
-                    console.log('Cannot proceed - validation failed');
-                    return;
-                }
-            }
-            
-            // Hide all steps first
-            for (let i = 1; i <= window.totalSteps; i++) {
-                const stepEl = document.getElementById('step' + i);
-                if (stepEl) stepEl.style.display = 'none';
-            }
-            
-            // Show target step
-            const targetStep = document.getElementById('step' + step);
-            if (targetStep) {
-                targetStep.style.display = 'block';
-            }
-            
-            // Update global currentStep variable
-            window.currentStep = currentStep = step;
-            updateUI();
-        };
-
-        window.prevStep = function() {
-            switchStep(currentStep - 1);
-        };
-
-        function updateUI() {
-            const step = window.currentStep || 1;
-            document.getElementById('prevBtn').style.display = step > 1 ? 'block' : 'none';
-            document.getElementById('nextBtn').style.display = step < window.totalSteps ? 'block' : 'none';
-            document.getElementById('submitBtn').style.display = step === window.totalSteps ? 'block' : 'none';
-            console.log('UI Updated - Step:', step, 'Prev:', step > 1, 'Next:', step < window.totalSteps, 'Submit:', step === window.totalSteps);
-        }
-
-        // Submit form handler
-        window.submitForm = function() {
-            if (validateCurrentStep()) {
-                // Hide any previous CPF duplicate message before submitting
-                const cpfDuplicateMessage = document.getElementById('cpf_duplicate_message');
-                if (cpfDuplicateMessage) cpfDuplicateMessage.style.display = 'none';
-                
-                // Hide any previous CPF step 4 alert before submitting
-                const cpfStep4Alert = document.getElementById('cpf_step4_alert');
-                if (cpfStep4Alert) cpfStep4Alert.style.display = 'none';
-                
-                // Use App Connect's submit method
-                let formComponent;
-                try {
-                    formComponent = dmx.app.find('criar_conta');
-                } catch (e) {
-                    console.log('Using fallback form submission');
-                    document.getElementById('criar_conta').dispatchEvent(new Event('submit'));
-                }
-                if (formComponent) {
-                    formComponent.submit();
-                }
-            }
-        };
-        
-        // Initialize UI
-        updateUI();
-        
-        // Reset form and steps when modal is opened/closed
-        const modal = document.getElementById('modal_criar_conta');
-        if (modal) {
-            modal.addEventListener('show.bs.modal', function() {
-                setTimeout(() => resetFormAndSteps(), 50);
-            });
-            modal.addEventListener('hidden.bs.modal', function() {
-                setTimeout(() => resetFormAndSteps(), 50);
-            });
-        }
-    });
-    
-    // Additional event listeners for modal events
-    document.addEventListener('DOMContentLoaded', function() {
-        const createAccountBtn = document.querySelector('[data-bs-target="#modal_criar_conta"]');
-        if (createAccountBtn) {
-            createAccountBtn.addEventListener('click', function() {
-                setTimeout(() => window.resetFormAndSteps && window.resetFormAndSteps(), 100);
-            });
-        }
-    });
-</script>
-
-<meta name="ac:route" content="/">
+    </script>
+    <meta name="ac:route" content="/">

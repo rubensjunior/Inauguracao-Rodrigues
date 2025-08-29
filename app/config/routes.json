@@ -7,9 +7,14 @@
       "layout": "main"
     },
     {
-      "path": "/cliente/area-do-cliente",
+      "path": "/security/f/area-do-cliente",
       "page": "cliente/area-do-cliente",
       "layout": "cliente"
+    },
+    {
+      "path": "/security/f/login",
+      "page": "login",
+      "layout": "main"
     }
   ]
 }
