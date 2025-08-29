@@ -38,6 +38,22 @@
       "db_user": "postgres.eqyafrpnfuwgessstuzc",
       "db_password": "@Baki025@",
       "db_database": "postgres"
+    },
+    {
+      "name": "rks",
+      "remoteURL": "https://rodrigues.rkstechsolution.com.br",
+      "access": "ftp",
+      "databaseConnectionType": "custom",
+      "databaseType": "postgres",
+      "db_host": "aws-0-sa-east-1.pooler.supabase.com",
+      "db_port": "5432",
+      "db_user": "postgres.eqyafrpnfuwgessstuzc",
+      "db_password": "@Baki025@",
+      "db_database": "postgres",
+      "usage": "production",
+      "ftpServer": "ftp.rubensbentes.com.br",
+      "ftpUser": "master@rodrigues.rkstechsolution.com.br",
+      "ftpPassword": "v2:cbfa442488322cbdb3a595589dc2dcbacaeb38eea3aa260f"
     }
   ],
   "activeTarget": "Development",
